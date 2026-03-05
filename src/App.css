@@ -384,3 +384,64 @@
     animation: none !important;
   }
 }
+
+.navRow{
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* active nav glow */
+.navBtn {
+  position: relative;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.navBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* active state */
+.navBtnActive {
+  border-color: rgba(0,245,255,0.40);
+  background: rgba(0,245,255,0.12);
+  box-shadow: 0 0 16px rgba(0,245,255,0.18), 0 0 26px rgba(110,90,255,0.10);
+}
+
+/* animated energy pulse on active underline (cyan + purple) */
+.navBtnActive::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(60, 190, 255, 0.70),
+    rgba(180, 70, 255, 0.55),
+    rgba(60, 190, 255, 0.70),
+    transparent
+  );
+
+  opacity: 0.9;
+  animation: navPulse 1.35s ease-in-out infinite;
+  filter:
+    drop-shadow(0 0 10px rgba(60,190,255,0.30))
+    drop-shadow(0 0 14px rgba(180,70,255,0.20));
+}
+
+@keyframes navPulse {
+  0%, 100% {
+    transform: scaleX(0.82);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleX(1.08);
+    opacity: 1;
+  }
+}

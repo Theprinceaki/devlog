@@ -1,165 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import Aki from "./assets/Aki.png";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
-/* =========================
-   1) YOUR DEVLOG (UNCHANGED)
-   ========================= */
-function DevlogView(): React.JSX.Element {
-  return (
-    <div className="App">
-      {/* HERO / HEADER */}
-      <header className="header card">
-        <div className="header-left">
-          <img className="avatar avatar--lg" src={Aki} alt="Aki" />
-          <div className="identity">
-            <h1 className="name glitch" data-text="MALIK ROGERS">
-              MALIK ROGERS
-            </h1>
-            <p className="subtitle">Devlog of the Divine Overlord receipts included</p>
-
-            <div className="badgeRow">
-              <span className="badge shipped">STATUS: ACTIVE</span>
-              <span className="badge">BUILD: v0.1.0</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="header-right">
-          <div className="panelTitle">Currently Working on</div>
-          <ul className="miniList">
-            <li>
-              <span className="key">PROJECT</span>
-              <span className="val">Nexus V</span>
-            </li>
-            <li>
-              <span className="key">STACK</span>
-              <span className="val">SERN + Copiliot Studio Agents + Open AI</span>
-            </li>
-            <li>
-              <span className="key">LAST SHIP</span>
-              <span className="val">Currently in development</span>
-            </li>
-          </ul>
-        </div>
-      </header>
-
-      {/* ABOUT */}
-      <section className="about card">
-        <div className="aboutTop">
-          <h2 className="aboutTitle">ABOUT ME</h2>
-          <span className="badge">LOCATION: CHICAGO</span>
-        </div>
-
-        <p className="aboutText">
-          Air Force Vet. Tech Bro. Otaku
-          <br />
-          I’m a Full-stack dev who creates scalable apps, plugs in AI tools, and runs work the
-          Agile way. I build for community impacted solutions and to create my own tech toys. If im not coding its PS5, Anime, manga, and tech
-          rabbit holes. My main goal is to master full-stack and transition into ethical hacking and
-          penetration testing. Right now I’m building <span className="accent">Nexus V</span>
-        </p>
-
-        <div className="aboutGrid">
-          <div className="aboutBlock">
-            <div className="aboutLabel">FOCUS</div>
-            <ul>
-              <li>SERN / API builds</li>
-              <li>Databases + workflows</li>
-              <li>Mastering the use of AI Agents</li>
-            </ul>
-          </div>
-
-          <div className="aboutBlock">
-            <div className="aboutLabel">CURRENT STACK</div>
-            <ul>
-              <li>Vite + React</li>
-              <li>Node + Express</li>
-              <li>SQL Server / MySQL</li>
-            </ul>
-          </div>
-
-          <div className="aboutBlock">
-            <div className="aboutLabel">LINKS</div>
-            <div className="aboutLinks">
-              <a
-                className="linkBtn"
-                href="https://github.com/Theprinceaki"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>
-              <a
-                className="linkBtn"
-                href="https://www.linkedin.com/in/malikakirogers/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn
-              </a>
-              <a className="linkBtn" href="#" target="_blank" rel="noreferrer">
-                Portfolio
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* MAIN GRID */}
-      <main className="grid">
-        {/* FEED */}
-        <section className="feed">
-          <div className="controls card">
-            <div className="terminalSearch">
-              <span className="prompt">&gt;</span>
-              <input
-                className="searchInput"
-                placeholder="search logs... (ship, hotfix, bug, sprint)"
-              />
-            </div>
-
-            <div className="tags">
-              <button className="tag active">ALL</button>
-              <button className="tag">BREAKAGE</button>
-            </div>
-          </div>
-
-          {/* SAMPLE POSTS */}
-          <article className="post card">
-            <div className="postTop">
-              <div>
-                <h2 className="postTitle">Sprint 1 — API Routes Wired</h2>
-                <p className="postMeta">2026-03-01 • backend</p>
-              </div>
-              <span className="badge shipped">Backend</span>
-            </div>
-
-            <p className="postExcerpt">
-              Connected Express routes, validated payloads, and set up a clean error response
-              format.
-            </p>
-          </article>
-        </section>
-
-        {/* RIGHT RAIL */}
-        <aside className="rail">
-          <div className="card railCard">
-            <div className="panelTitle">NEXT EXECUTION</div>
-            <ul className="railList">
-              <li>Finish Postman tests for routes</li>
-              <li>Standardize response schema</li>
-              <li>Document env + DB setup</li>
-            </ul>
-          </div>
-        </aside>
-      </main>
-    </div>
-  );
-}
+import Home from "./components/Home";
+import About from "./components/About";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 /* =========================
-   2) BOOT INTRO (BLACK + TYPE)
+   1) BOOT INTRO (BLACK + TYPE)
    ========================= */
 function BootIntro({ fading }: { fading: boolean }) {
   return (
@@ -177,7 +26,7 @@ function BootIntro({ fading }: { fading: boolean }) {
 }
 
 /* =========================
-   3) VOID ANIMATION (4s) — CANVAS (BLUE/PURPLE)
+   2) VOID ANIMATION — CANVAS
    ========================= */
 function BootVoidScreen({ fading }: { fading: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -226,7 +75,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
       const cx = w * 0.5;
       const cy = h * 0.45;
 
-      // base void gradient (blue/purple)
+      
       const bg = ctx.createRadialGradient(cx, cy, 20, cx, cy, Math.max(w, h) * 0.9);
       bg.addColorStop(0, "rgba(12, 12, 32, 1)");
       bg.addColorStop(0.35, "rgba(0, 0, 0, 1)");
@@ -240,7 +89,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
         const oy = cy + Math.cos(t * (0.22 + i * 0.10)) * (120 + i * 70);
         const g = ctx.createRadialGradient(ox, oy, 10, ox, oy, 520 + i * 220);
 
-        // alternate purple/cyan glow
+
         const purple = i % 2 === 0;
         g.addColorStop(0, purple ? "rgba(180,70,255,0.14)" : "rgba(60,190,255,0.10)");
         g.addColorStop(0.35, purple ? "rgba(110,90,255,0.08)" : "rgba(60,190,255,0.06)");
@@ -284,7 +133,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
         ctx.save();
         ctx.rotate(rot);
 
-        // dashed ring
+
         ctx.setLineDash([10 + i * 2, 22 + i * 4]);
         ctx.lineWidth = Math.max(1, 2 - i * 0.12);
         ctx.strokeStyle = `rgba(180,70,255,${0.20 - i * 0.025})`;
@@ -295,7 +144,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
         ctx.arc(0, 0, r, 0, Math.PI * 2);
         ctx.stroke();
 
-        // inner pulse arc (cyan highlight)
+
         ctx.setLineDash([]);
         ctx.lineWidth = 3;
         ctx.strokeStyle = `rgba(60,190,255,${0.14 - i * 0.015})`;
@@ -310,13 +159,13 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
         ctx.restore();
       }
 
-      // center core glow
+
       const core = ctx.createRadialGradient(0, 0, 10, 0, 0, ringBase * 0.95);
       core.addColorStop(0, "rgba(0,0,0,0.98)");
       core.addColorStop(0.55, "rgba(0,0,0,0.85)");
       core.addColorStop(0.70, "rgba(110,90,255,0.10)");
       core.addColorStop(0.85, "rgba(60,190,255,0.06)");
-      core.addColorStop(1, "rgba(0,0,0,0)");
+      core.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = core;
       ctx.beginPath();
       ctx.arc(0, 0, ringBase * 0.95, 0, Math.PI * 2);
@@ -324,7 +173,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
 
       ctx.restore();
 
-      // subtle flicker lines (very light)
+
       const flick = (Math.sin(t * 11.5) + Math.sin(t * 7.2 + 1.2)) * 0.5;
       if (flick > 0.78) {
         ctx.fillStyle = "rgba(255,255,255,0.05)";
@@ -350,7 +199,7 @@ function BootVoidScreen({ fading }: { fading: boolean }) {
 }
 
 /* =========================
-   4) APP: Intro -> Void (4s) -> Fade -> Devlog
+   3) APP: Intro -> Void -> Routes
    ========================= */
 export default function App(): React.JSX.Element {
   const [phase, setPhase] = useState<"intro" | "anim" | "devlog">("intro");
@@ -374,11 +223,23 @@ export default function App(): React.JSX.Element {
     };
   }, []);
 
-  if (phase === "devlog") return <DevlogView />;
+  if (phase === "intro") return <BootIntro fading={fading} />;
+  if (phase === "anim") return <BootVoidScreen fading={fading} />;
 
-  return phase === "intro" ? (
-    <BootIntro fading={fading} />
-  ) : (
-    <BootVoidScreen fading={fading} />
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        {/* if someone types a random route */}
+        <Route path="*" element={<Home />} />
+      </Routes>
+      <Footer />
+      
+    </>
   );
 }
+
+// 404 router
+
