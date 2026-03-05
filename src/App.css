@@ -445,3 +445,9 @@
     opacity: 1;
   }
 }
+
+.highlightTitle {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
