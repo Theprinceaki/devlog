@@ -344,3 +344,29 @@
     animation: none;
   }
 }
+.stack-icons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.2rem;
+}
+
+.stack-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    text-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.stack-icon:hover {
+  color: #00d9ff;
+  transform: translateY(-2px) scale(1.08);
+  text-shadow: 0 0 10px rgba(0, 217, 255, 0.45);
+  filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.28));
+}

@@ -1,6 +1,8 @@
 import React from "react";
 import Header from "../components/Header";
 import EntriesList from "../components/EntriesList";
+import { FaReact, FaNodeJs, FaGithub } from "react-icons/fa";
+import { SiTypescript, SiJavascript, SiMysql, SiPostman } from "react-icons/si";
 
 export default function Home(): React.JSX.Element {
   return (
@@ -20,21 +22,62 @@ export default function Home(): React.JSX.Element {
             <div
               style={{
                 display: "flex",
-                alignItems: "baseline",
+                alignItems: "center",
                 justifyContent: "space-between",
                 gap: 16,
+                flexWrap: "wrap",
               }}
             >
-              <h2>Captain&apos;s Log</h2>
-              <span className="subtitle" style={{ opacity: 0.8 }}>
+              <h2
+                style={{
+                  margin: 0,
+                  color: "#00d9ff",
+                  textShadow: "0 0 10px rgba(0, 217, 255, 0.25)",
+                }}
+              >
+                Captain&apos;s Log
+              </h2>
+
+              <div className="stack-icons">
+                <span className="stack-icon" title="React">
+                  <FaReact />
+                </span>
+
+                <span className="stack-icon" title="TypeScript">
+                  <SiTypescript />
+                </span>
+
+                <span className="stack-icon" title="JavaScript">
+                  <SiJavascript />
+                </span>
+
+                <span className="stack-icon" title="Node.js">
+                  <FaNodeJs />
+                </span>
+
+                <span className="stack-icon" title="MySQL">
+                  <SiMysql />
+                </span>
+
+                <span className="stack-icon" title="GitHub">
+                  <FaGithub />
+                </span>
+
+                <span className="stack-icon" title="Postman">
+                  <SiPostman />
+                </span>
+              </div>
+
+              <span
+                className="subtitle"
+                style={{
+                  opacity: 0.8,
+                  color: "#f5f7ff",
+                }}
+              >
                 Mission archive
               </span>
             </div>
-
-            <p className="postExcerpt" style={{ marginTop: 10 }}>
-              A running log of what I’m building, fixing, and learning as I grow
-              Nexus V into a stronger full-stack system.
-            </p>
           </div>
 
           <EntriesList />
@@ -52,12 +95,11 @@ export default function Home(): React.JSX.Element {
           </div>
 
           <div className="card railCard" style={{ marginTop: 12 }}>
-            <div className="panelTitle">DEMO QUICK LINKS</div>
+            <div className="panelTitle">Possible Projects</div>
             <ul className="railList">
-              <li>POST /demo/seed</li>
-              <li>GET /job-descriptions/:id/summary</li>
-              <li>GET /request-logs/recent</li>
-              <li>GET /routes</li>
+              <li>simple Weather app</li>
+              <li>AI chatbot</li>
+              <li>Currency Converter</li>
             </ul>
           </div>
         </aside>
