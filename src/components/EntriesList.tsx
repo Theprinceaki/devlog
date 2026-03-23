@@ -1,23 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
 import EntryCard from "./EntryCard";
-import { entries } from "../data/entries";
+import { type Entry } from "../data/entries";
 
-export default function EntriesList() {
+interface EntriesListProps {
+  entries: Entry[];
+  maxVisibleEntries?: number;
+  itemsPerPage?: number;
+}
+
+export default function EntriesList({
+  entries,
+  maxVisibleEntries,
+  itemsPerPage = 3,
+}: EntriesListProps) {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"next" | "previous">("next");
 
-  const reversedEntries = [...entries].reverse();
+  const newestFirstEntries = useMemo(() => {
+    return [...entries].reverse();
+  }, [entries]);
+
+  const visibleSourceEntries = useMemo(() => {
+    if (!maxVisibleEntries) {
+      return newestFirstEntries;
+    }
+
+    return newestFirstEntries.slice(0, maxVisibleEntries);
+  }, [newestFirstEntries, maxVisibleEntries]);
 
   const filteredEntries = useMemo(() => {
     const searchValue = search.trim().toLowerCase();
 
     if (!searchValue) {
-      return reversedEntries;
+      return visibleSourceEntries;
     }
 
-    return reversedEntries.filter((entry) => {
+    return visibleSourceEntries.filter((entry) => {
       const titleMatch = entry.title.toLowerCase().includes(searchValue);
       const summaryMatch = entry.summary.toLowerCase().includes(searchValue);
       const tagsMatch = entry.tags.some((tag) =>
@@ -26,22 +46,21 @@ export default function EntriesList() {
 
       return titleMatch || summaryMatch || tagsMatch;
     });
-  }, [search, reversedEntries]);
+  }, [search, visibleSourceEntries]);
 
-  const entriesPerPage = 3;
   const totalPages = Math.max(
     1,
-    Math.ceil(filteredEntries.length / entriesPerPage)
+    Math.ceil(filteredEntries.length / itemsPerPage)
   );
 
   useEffect(() => {
     setPage(0);
-  }, [search]);
+  }, [search, entries, maxVisibleEntries, itemsPerPage]);
 
-  const startIndex = page * entriesPerPage;
-  const visibleEntries = filteredEntries.slice(
+  const startIndex = page * itemsPerPage;
+  const pageEntries = filteredEntries.slice(
     startIndex,
-    startIndex + entriesPerPage
+    startIndex + itemsPerPage
   );
 
   function changePage(nextPage: number, moveDirection: "next" | "previous") {
@@ -52,7 +71,7 @@ export default function EntriesList() {
     setDirection(moveDirection);
     setIsAnimating(true);
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       setPage(nextPage);
       setIsAnimating(false);
     }, 180);
@@ -66,207 +85,68 @@ export default function EntriesList() {
     changePage(page - 1, "previous");
   }
 
+  const hasResults = pageEntries.length > 0;
+  const shouldShowPager = filteredEntries.length > itemsPerPage;
+
   return (
-    <section
-      style={{
-        marginTop: 20,
-        padding: 20,
-        borderRadius: 20,
-        border: "1px solid rgba(0, 245, 255, 0.18)",
-        background:
-          "linear-gradient(180deg, rgba(8,12,20,0.96), rgba(4,8,14,0.98))",
-        boxShadow:
-          "0 18px 40px rgba(0,0,0,0.35), 0 0 18px rgba(0,245,255,0.08)",
-        display: "grid",
-        gap: 18
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gap: 10,
-          paddingBottom: 14,
-          borderBottom: "1px solid rgba(0, 245, 255, 0.12)"
-        }}
-      >
-        <p
-          style={{
-            margin: 0,
-            fontSize: ".78rem",
-            letterSpacing: ".16em",
-            textTransform: "uppercase",
-            color: "#00f5ff",
-            opacity: 0.9
-          }}
-        >
-          DevLog Archive
-        </p>
-
-        <h2
-          style={{
-            margin: 0,
-            fontSize: "1.4rem",
-            fontWeight: 700,
-            letterSpacing: ".03em",
-            color: "#f5f7ff"
-          }}
-        >
-          Recent Captain’s Log Entries
-        </h2>
-
-        <p
-          style={{
-            margin: 0,
-            fontSize: ".95rem",
-            lineHeight: 1.5,
-            color: "#00d9ff"
-          }}
-        >
-          A running log of what I’m building, fixing, and learning as I grow
-          Nexus V into a stronger full-stack system.
-        </p>
-
+    <section className="entriesSection">
+      <div className="entriesTop">
         <input
+          className="entriesSearch"
           type="text"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search logs or tags..."
-          style={{
-            marginTop: 6,
-            width: "100%",
-            padding: "12px 14px",
-            borderRadius: 12,
-            border: "1px solid rgba(0, 245, 255, 0.18)",
-            outline: "none",
-            background: "rgba(10,16,24,0.95)",
-            color: "#f5f7ff",
-            fontSize: ".95rem",
-            boxSizing: "border-box",
-            boxShadow: "inset 0 0 10px rgba(0, 245, 255, 0.04)"
-          }}
         />
+
+        <p className="pagerText">
+          Showing {pageEntries.length} of {filteredEntries.length} matching
+          entries
+        </p>
       </div>
 
       <div
+        className="entriesGrid"
         style={{
-          display: "grid",
-          gap: 14,
           opacity: isAnimating ? 0 : 1,
           transform: isAnimating
             ? direction === "next"
               ? "translateX(-18px)"
               : "translateX(18px)"
             : "translateX(0)",
-          transition: "opacity 0.18s ease, transform 0.18s ease"
+          transition: "opacity 0.18s ease, transform 0.18s ease",
         }}
       >
-        {visibleEntries.length > 0 ? (
-          visibleEntries.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} />
-          ))
+        {hasResults ? (
+          pageEntries.map((entry) => <EntryCard key={entry.id} entry={entry} />)
         ) : (
-          <div
-            style={{
-              padding: 18,
-              borderRadius: 16,
-              border: "1px solid rgba(0, 245, 255, 0.12)",
-              background:
-                "linear-gradient(180deg, rgba(14,20,30,0.95), rgba(8,12,20,0.95))",
-              color: "rgba(255,255,255,0.72)"
-            }}
-          >
-            No log entries matched that search.
-          </div>
+          <div className="entriesEmpty">No log entries matched that search.</div>
         )}
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 12,
-          marginTop: 4
-        }}
-      >
-        <button
-          onClick={handlePrevious}
-          disabled={page === 0 || filteredEntries.length === 0}
-          style={{
-            padding: "10px 16px",
-            borderRadius: 12,
-            border: "1px solid rgba(0, 245, 255, 0.18)",
-            background:
-              page === 0 || filteredEntries.length === 0
-                ? "rgba(255,255,255,0.04)"
-                : "linear-gradient(180deg, rgba(18,28,40,1), rgba(10,18,28,1))",
-            color:
-              page === 0 || filteredEntries.length === 0
-                ? "rgba(255,255,255,0.4)"
-                : "#eafcff",
-            cursor:
-              page === 0 || filteredEntries.length === 0
-                ? "not-allowed"
-                : "pointer",
-            fontWeight: 600,
-            letterSpacing: ".03em",
-            boxShadow:
-              page === 0 || filteredEntries.length === 0
-                ? "none"
-                : "0 0 12px rgba(0, 245, 255, 0.08)"
-          }}
-        >
-          ← Previous
-        </button>
+      {shouldShowPager && (
+        <div className="entriesPager">
+          <button
+            className="pagerBtn"
+            onClick={handlePrevious}
+            disabled={page === 0}
+          >
+            ← Previous
+          </button>
 
-        <p
-          style={{
-            margin: 0,
-            padding: "8px 14px",
-            borderRadius: 999,
-            border: "1px solid rgba(0, 245, 255, 0.18)",
-            background: "rgba(0, 245, 255, 0.06)",
-            color: "#c9fbff",
-            fontSize: ".92rem",
-            letterSpacing: ".06em",
-            boxShadow:
-              "0 0 12px rgba(0, 245, 255, 0.14), inset 0 0 10px rgba(0, 245, 255, 0.05)"
-          }}
-        >
-          Page {filteredEntries.length === 0 ? 0 : page + 1} of{" "}
-          {filteredEntries.length === 0 ? 0 : totalPages}
-        </p>
+          <p className="pagerText">
+            Page {page + 1} of {totalPages}
+          </p>
 
-        <button
-          onClick={handleNext}
-          disabled={page === totalPages - 1 || filteredEntries.length === 0}
-          style={{
-            padding: "10px 16px",
-            borderRadius: 12,
-            border: "1px solid rgba(0, 245, 255, 0.18)",
-            background:
-              page === totalPages - 1 || filteredEntries.length === 0
-                ? "rgba(255,255,255,0.04)"
-                : "linear-gradient(180deg, rgba(18,28,40,1), rgba(10,18,28,1))",
-            color:
-              page === totalPages - 1 || filteredEntries.length === 0
-                ? "rgba(255,255,255,0.4)"
-                : "#eafcff",
-            cursor:
-              page === totalPages - 1 || filteredEntries.length === 0
-                ? "not-allowed"
-                : "pointer",
-            fontWeight: 600,
-            letterSpacing: ".03em",
-            boxShadow:
-              page === totalPages - 1 || filteredEntries.length === 0
-                ? "none"
-                : "0 0 12px rgba(0, 245, 255, 0.08)"
-          }}
-        >
-          Next →
-        </button>
-      </div>
+          <button
+            className="pagerBtn"
+            onClick={handleNext}
+            disabled={page === totalPages - 1}
+          >
+            Next →
+          </button>
+        </div>
+      )}
     </section>
   );
 }

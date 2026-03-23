@@ -3,8 +3,13 @@ import Header from "../components/Header";
 import EntriesList from "../components/EntriesList";
 import { FaReact, FaNodeJs, FaGithub } from "react-icons/fa";
 import { SiTypescript, SiJavascript, SiMysql, SiPostman } from "react-icons/si";
+import { type Entry } from "../data/entries";
 
-export default function Home(): React.JSX.Element {
+interface HomeProps {
+  entries: Entry[];
+}
+
+export default function Home({ entries }: HomeProps): React.JSX.Element {
   return (
     <div className="App">
       <Header
@@ -80,7 +85,7 @@ export default function Home(): React.JSX.Element {
             </div>
           </div>
 
-          <EntriesList />
+          <EntriesList entries={entries} maxVisibleEntries={6} itemsPerPage={6} />
         </section>
 
         <aside className="rail">

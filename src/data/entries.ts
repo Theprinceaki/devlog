@@ -6,7 +6,7 @@ export interface Entry {
   tags: string[];
 }
 
-export const entries: Entry[] = [
+const seedEntries: Entry[] = [
   {
     id: 1,
     title: "DevLog cleanup operation",
@@ -136,3 +136,5 @@ export const entries: Entry[] = [
     tags: ["devlog", "growth", "story", "project"]
   }
 ];
+
+export default seedEntries;
