@@ -5,10 +5,16 @@ import { type Entry } from "../data/entries";
 
 interface EntriesPageProps {
   entries: Entry[];
+  onDeleteEntry: (id: number) => void;
+  isLoadingEntries: boolean;
+  deletingEntryId: number | null;
 }
 
 export default function EntriesPage({
   entries,
+  onDeleteEntry,
+  isLoadingEntries,
+  deletingEntryId,
 }: EntriesPageProps): React.JSX.Element {
   return (
     <div className="App">
@@ -23,7 +29,16 @@ export default function EntriesPage({
 
       <main className="grid">
         <section className="feed">
-          <EntriesList entries={entries} />
+          {isLoadingEntries ? (
+            <div className="entriesEmpty">Loading archive...</div>
+          ) : (
+            <EntriesList
+              entries={entries}
+              onDeleteEntry={onDeleteEntry}
+              showActions={true}
+              deletingEntryId={deletingEntryId}
+            />
+          )}
         </section>
       </main>
     </div>

@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Entry {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.NVarChar(255)
+  date      String   @db.NVarChar(50)
+  summary   String
+  tags      String
+  mood      String   @db.NVarChar(255)
+  createdAt DateTime @default(now())
+
+  @@map("entries")
+}

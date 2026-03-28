@@ -3,11 +3,18 @@ import Header from "../components/Header";
 import NewEntryForm from "../components/NewEntryForm";
 
 interface NewEntryPageProps {
-  onAddEntry: (title: string, content: string) => void;
+  onAddEntry: (
+    title: string,
+    content: string,
+    mood: string,
+    tags: string[]
+  ) => Promise<void> | void;
+  isSavingEntry: boolean;
 }
 
 export default function NewEntryPage({
   onAddEntry,
+  isSavingEntry,
 }: NewEntryPageProps): React.JSX.Element {
   return (
     <div className="App">
@@ -23,7 +30,11 @@ export default function NewEntryPage({
       <main className="grid">
         <section className="feed">
           <div className="card">
-            <NewEntryForm onAddEntry={onAddEntry} />
+            <NewEntryForm
+              onSubmitEntry={onAddEntry}
+              submitLabel="Save Entry"
+              isSubmitting={isSavingEntry}
+            />
           </div>
         </section>
       </main>

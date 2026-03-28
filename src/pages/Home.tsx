@@ -7,9 +7,17 @@ import { type Entry } from "../data/entries";
 
 interface HomeProps {
   entries: Entry[];
+  onDeleteEntry: (id: number) => void;
+  isLoadingEntries: boolean;
+  deletingEntryId: number | null;
 }
 
-export default function Home({ entries }: HomeProps): React.JSX.Element {
+export default function Home({
+  entries,
+  onDeleteEntry,
+  isLoadingEntries,
+  deletingEntryId,
+}: HomeProps): React.JSX.Element {
   return (
     <div className="App">
       <Header
@@ -47,27 +55,21 @@ export default function Home({ entries }: HomeProps): React.JSX.Element {
                 <span className="stack-icon" title="React">
                   <FaReact />
                 </span>
-
                 <span className="stack-icon" title="TypeScript">
                   <SiTypescript />
                 </span>
-
                 <span className="stack-icon" title="JavaScript">
                   <SiJavascript />
                 </span>
-
                 <span className="stack-icon" title="Node.js">
                   <FaNodeJs />
                 </span>
-
                 <span className="stack-icon" title="MySQL">
                   <SiMysql />
                 </span>
-
                 <span className="stack-icon" title="GitHub">
                   <FaGithub />
                 </span>
-
                 <span className="stack-icon" title="Postman">
                   <SiPostman />
                 </span>
@@ -85,7 +87,18 @@ export default function Home({ entries }: HomeProps): React.JSX.Element {
             </div>
           </div>
 
-          <EntriesList entries={entries} maxVisibleEntries={6} itemsPerPage={6} />
+          {isLoadingEntries ? (
+            <div className="entriesEmpty">Loading captain&apos;s logs...</div>
+          ) : (
+            <EntriesList
+              entries={entries}
+              maxVisibleEntries={6}
+              itemsPerPage={6}
+              onDeleteEntry={onDeleteEntry}
+              showActions={false}
+              deletingEntryId={deletingEntryId}
+            />
+          )}
         </section>
 
         <aside className="rail">

@@ -6,62 +6,59 @@ interface EntriesListProps {
   entries: Entry[];
   maxVisibleEntries?: number;
   itemsPerPage?: number;
+  onDeleteEntry: (id: number) => void;
+  showActions?: boolean;
+  deletingEntryId?: number | null;
 }
 
 export default function EntriesList({
   entries,
   maxVisibleEntries,
   itemsPerPage = 3,
+  onDeleteEntry,
+  showActions = false,
+  deletingEntryId = null,
 }: EntriesListProps) {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<"next" | "previous">("next");
 
-  const newestFirstEntries = useMemo(() => {
-    return [...entries].reverse();
-  }, [entries]);
-
-  const visibleSourceEntries = useMemo(() => {
+  const visibleEntries = useMemo(() => {
     if (!maxVisibleEntries) {
-      return newestFirstEntries;
+      return entries;
     }
 
-    return newestFirstEntries.slice(0, maxVisibleEntries);
-  }, [newestFirstEntries, maxVisibleEntries]);
+    return entries.slice(0, maxVisibleEntries);
+  }, [entries, maxVisibleEntries]);
 
   const filteredEntries = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
+    const value = search.trim().toLowerCase();
 
-    if (!searchValue) {
-      return visibleSourceEntries;
+    if (!value) {
+      return visibleEntries;
     }
 
-    return visibleSourceEntries.filter((entry) => {
-      const titleMatch = entry.title.toLowerCase().includes(searchValue);
-      const summaryMatch = entry.summary.toLowerCase().includes(searchValue);
+    return visibleEntries.filter((entry) => {
+      const titleMatch = entry.title.toLowerCase().includes(value);
+      const summaryMatch = entry.summary.toLowerCase().includes(value);
+      const moodMatch = entry.mood.toLowerCase().includes(value);
       const tagsMatch = entry.tags.some((tag) =>
-        tag.toLowerCase().includes(searchValue)
+        tag.toLowerCase().includes(value)
       );
 
-      return titleMatch || summaryMatch || tagsMatch;
+      return titleMatch || summaryMatch || moodMatch || tagsMatch;
     });
-  }, [search, visibleSourceEntries]);
+  }, [search, visibleEntries]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredEntries.length / itemsPerPage)
-  );
+  const totalPages = Math.max(1, Math.ceil(filteredEntries.length / itemsPerPage));
 
   useEffect(() => {
     setPage(0);
   }, [search, entries, maxVisibleEntries, itemsPerPage]);
 
   const startIndex = page * itemsPerPage;
-  const pageEntries = filteredEntries.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const pageEntries = filteredEntries.slice(startIndex, startIndex + itemsPerPage);
 
   function changePage(nextPage: number, moveDirection: "next" | "previous") {
     if (nextPage < 0 || nextPage > totalPages - 1 || nextPage === page) {
@@ -75,14 +72,6 @@ export default function EntriesList({
       setPage(nextPage);
       setIsAnimating(false);
     }, 180);
-  }
-
-  function handleNext() {
-    changePage(page + 1, "next");
-  }
-
-  function handlePrevious() {
-    changePage(page - 1, "previous");
   }
 
   const hasResults = pageEntries.length > 0;
@@ -100,8 +89,7 @@ export default function EntriesList({
         />
 
         <p className="pagerText">
-          Showing {pageEntries.length} of {filteredEntries.length} matching
-          entries
+          Showing {pageEntries.length} of {filteredEntries.length} matching entries
         </p>
       </div>
 
@@ -118,7 +106,15 @@ export default function EntriesList({
         }}
       >
         {hasResults ? (
-          pageEntries.map((entry) => <EntryCard key={entry.id} entry={entry} />)
+          pageEntries.map((entry) => (
+            <EntryCard
+              key={entry.id}
+              entry={entry}
+              onDeleteEntry={onDeleteEntry}
+              showActions={showActions}
+              isDeleting={deletingEntryId === entry.id}
+            />
+          ))
         ) : (
           <div className="entriesEmpty">No log entries matched that search.</div>
         )}
@@ -128,7 +124,7 @@ export default function EntriesList({
         <div className="entriesPager">
           <button
             className="pagerBtn"
-            onClick={handlePrevious}
+            onClick={() => changePage(page - 1, "previous")}
             disabled={page === 0}
           >
             ← Previous
@@ -140,7 +136,7 @@ export default function EntriesList({
 
           <button
             className="pagerBtn"
-            onClick={handleNext}
+            onClick={() => changePage(page + 1, "next")}
             disabled={page === totalPages - 1}
           >
             Next →

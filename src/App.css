@@ -266,7 +266,8 @@ form label {
 }
 
 form input,
-form textarea {
+form textarea,
+form select {
   width: 100%;
   padding: 12px 14px;
   border-radius: 12px;
@@ -688,4 +689,29 @@ form button:hover,
   gap: 12px;
   margin-top: 4px;
   flex-wrap: wrap;
+}
+.flashMessage {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 10000;
+  min-width: 220px;
+  max-width: 360px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 245, 255, 0.18);
+  background: rgba(8, 14, 24, 0.96);
+  color: #f5f7ff;
+  font-weight: 600;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.28),
+    0 0 18px rgba(0, 245, 255, 0.1);
+}
+
+.flashSuccess {
+  border-color: rgba(0, 245, 255, 0.28);
+}
+
+.flashError {
+  border-color: rgba(255, 99, 132, 0.35);
 }
